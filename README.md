@@ -12,6 +12,6 @@ Cet outil a pour but de collecter des informations d'une machine Windows afin de
 
 Exécutez `Run.bat` en tant qu'administrateur
 
-![](images/Executer C0-FF-EE.png)
+![](images/Executer_C0-FF-EE.png)
 
 Vous pouvez utiliser des règles Yara perso en les ajoutant dans le fichier `bin\rules.yar`
