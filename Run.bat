@@ -142,6 +142,8 @@ reg.exe export HKCC .\logs\registre\registre_hkcc.txt >NUL 2> .\logs\debug.log
 
 echo %date% %time% : Etape 04 - Collecte d'informations disques
 echo %date% %time% : Etape 04 - Collecte d'informations disques >> .\logs\C0-FF-EE.log
+fsutil usn readjournal c: >> .\logs\disques\usn.log 2> .\logs\debug.log
+call %binary%\Mft2Csv.exe /Volume:c: /OutputPath:.\logs\disques\MFT >NUL 2> .\logs\debug.log
 fsutil fsinfo drives >> .\logs\disques\Info_disques_1.txt 2> .\logs\debug.log
 wmic logicaldisk where drivetype=3 get name, freespace, systemname, filesystem, size, volumeserialnumber >> .\logs\disques\Info_disques_2.txt 2> .\logs\debug.log
 wmic logicaldisk get description,name,FileSystem,VolumeName,VolumeSerialNumber,FreeSpace,Size >> .\logs\disques\Info_disques_3.txt 2> .\logs\debug.log
