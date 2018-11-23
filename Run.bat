@@ -86,6 +86,7 @@ if not exist ".\logs\Bios" mkdir .\logs\Bios
 if not exist ".\logs\Registre" mkdir .\logs\Registre
 if not exist ".\logs\reseau" mkdir .\logs\Reseau
 if not exist ".\logs\Systeme" mkdir .\logs\Systeme
+if not exist ".\logs\Systeme\Prefetch" mkdir .\logs\Systeme\Prefetch
 if not exist ".\logs\Systeme\autorun" mkdir .\logs\Systeme\Autorun
 if not exist ".\logs\Systeme\logs" mkdir .\logs\Systeme\Logs
 if not exist ".\logs\disques" mkdir .\logs\Disques
@@ -130,6 +131,7 @@ type c:\Autoexec.bat >> .\logs\Systeme\autorun\Autoexec.bat.txt 2> .\logs\debug.
 type c:\Windows\winstart.bat >> .\logs\Systeme\autorun\Autoexec.bat.txt 2> .\logs\debug.log
 type %windir%\wininit.ini >> .\logs\Systeme\autorun\wininit.ini.txt 2> .\logs\debug.log
 type %windir%\win.ini >> .\logs\Systeme\autorun\win.ini.txt 2> .\logs\debug.log
+xcopy C:\Windows\Prefetch\*.* .\logs\Systeme\Prefetch
 wmic qfe >> .\logs\Systeme\KB.txt 2> .\logs\debug.log
 net accounts >> .\logs\Systeme\Politique_mot_de_passe.txt 2> .\logs\debug.log
 net start >> .\logs\Systeme\Service_lances_1.txt 2> .\logs\debug.log
