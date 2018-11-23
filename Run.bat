@@ -131,7 +131,7 @@ type c:\Autoexec.bat >> .\logs\Systeme\autorun\Autoexec.bat.txt 2> .\logs\debug.
 type c:\Windows\winstart.bat >> .\logs\Systeme\autorun\Autoexec.bat.txt 2> .\logs\debug.log
 type %windir%\wininit.ini >> .\logs\Systeme\autorun\wininit.ini.txt 2> .\logs\debug.log
 type %windir%\win.ini >> .\logs\Systeme\autorun\win.ini.txt 2> .\logs\debug.log
-xcopy C:\Windows\Prefetch\*.* .\logs\Systeme\Prefetch
+xcopy C:\Windows\Prefetch\*.* .\logs\Systeme\Prefetch >NUL 2> .\logs\debug.log
 wmic qfe >> .\logs\Systeme\KB.txt 2> .\logs\debug.log
 net accounts >> .\logs\Systeme\Politique_mot_de_passe.txt 2> .\logs\debug.log
 net start >> .\logs\Systeme\Service_lances_1.txt 2> .\logs\debug.log
@@ -199,7 +199,7 @@ if /I %VarQuestion2% NEQ o goto :fin
 if not exist ".\logs\Yara" mkdir .\logs\Yara
 echo %date% %time% : Etape 07 - Recherche Yara
 echo %date% %time% : Etape 07 - Recherche Yara >> .\logs\C0-FF-EE.log
-call %binary%\yara64.exe -r -f %binary%\rules.yar c:\ >> .\logs\Yara\Result.txt 2>NUL
+call %binary%\yara32.exe -r -f %binary%\rules.yar c:\ >> .\logs\Yara\Result.txt 2>NUL
 
 :fin
 
