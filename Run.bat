@@ -140,8 +140,26 @@ net session >> .\logs\Systeme\Sessions_1.txt 2> .\logs\debug.log
 net localgroup administrators /domain >> .\logs\Systeme\Admin_AD.txt 2> .\logs\debug.log
 wmic ntdomain list brief >> .\logs\Systeme\Controleur_domaine.txt 2> .\logs\debug.log
 net localgroup >> .\logs\Systeme\Groups_locaux.txt 2> .\logs\debug.log
-net localgroup administrators >> .\logs\Systeme\Groupe_administrators.txt 2> .\logs\debug.log
-net localgroup administrateurs >> .\logs\Systeme\Groupe_administrateurs.txt 2> .\logs\debug.log
+net localgroup "Administrators" >> .\logs\Systeme\Groupe_administrators.txt 2> .\logs\debug.log
+net localgroup "Administrateurs" >> .\logs\Systeme\Groupes_a_privileges.txt 2> .\logs\debug.log
+net localgroup "Administrateurs Hyper-V" >> .\logs\Systeme\Groupes_a_privileges.txt 2> .\logs\debug.log
+net localgroup "Duplicateurs" >> .\logs\Systeme\Groupes_a_privileges.txt 2> .\logs\debug.log
+net localgroup "IIS_IUSRS" >> .\logs\Systeme\Groupes_a_privileges.txt 2> .\logs\debug.log
+net localgroup "Invités" >> .\logs\Systeme\Groupes_a_privileges.txt 2> .\logs\debug.log
+net localgroup "Lecteurs des journaux d'événements" >> .\logs\Systeme\Groupes_a_privileges.txt 2> .\logs\debug.log
+net localgroup "Opérateurs d'assistance de contrôle d'accès" >> .\logs\Systeme\Groupes_a_privileges.txt 2> .\logs\debug.log
+net localgroup "Opérateurs de chiffrement" >> .\logs\Systeme\Groupes_a_privileges.txt 2> .\logs\debug.log
+net localgroup "Opérateurs de configuration réseau" >> .\logs\Systeme\Groupes_a_privileges.txt 2> .\logs\debug.log
+net localgroup "Opérateurs de sauvegarde" >> .\logs\Systeme\Groupes_a_privileges.txt 2> .\logs\debug.log
+net localgroup "System Managed Accounts Group" >> .\logs\Systeme\Groupes_a_privileges.txt 2> .\logs\debug.log
+net localgroup "Utilisateurs" >> .\logs\Systeme\Groupes_a_privileges.txt 2> .\logs\debug.log
+net localgroup "Utilisateurs avec pouvoir" >> .\logs\Systeme\Groupes_a_privileges.txt 2> .\logs\debug.log
+net localgroup "Utilisateurs de gestion à distance" >> .\logs\Systeme\Groupes_a_privileges.txt 2> .\logs\debug.log
+net localgroup "Utilisateurs de l'Analyseur de performances" >> .\logs\Systeme\Groupes_a_privileges.txt 2> .\logs\debug.log
+net localgroup "Utilisateurs du Bureau à distance" >> .\logs\Systeme\Groupes_a_privileges.txt 2> .\logs\debug.log
+net localgroup "Utilisateurs du contrôle à distance ConfigMgr" >> .\logs\Systeme\Groupes_a_privileges.txt 2> .\logs\debug.log
+net localgroup "Utilisateurs du journal de performances" >> .\logs\Systeme\Groupes_a_privileges.txt 2> .\logs\debug.log
+net localgroup "Utilisateurs du modèle COM distribué" >> .\logs\Systeme\Groupes_a_privileges.txt 2> .\logs\debug.log
 quser >> .\logs\Systeme\Sessions_2.txt 2> .\logs\debug.log
 tasklist.exe /svc >> .\logs\Systeme\Processus_1.txt 2> .\logs\debug.log
 wmic process list full >> .\logs\Systeme\Processus_2.txt 2> .\logs\debug.log
