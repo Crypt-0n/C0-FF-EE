@@ -94,7 +94,7 @@ if not exist ".\logs\disques" mkdir .\logs\Disques
 if /I %VarQuestion% NEQ o goto :main
 echo %date% %time% : Creation d'un Dump de RAM
 echo %date% %time% : Creation d'un Dump de RAM >> .\logs\C0-FF-EE.log
-call .\bin\winpmem_1.6.2.exe .\logs\mem_dump.raw >NUL 2> .\logs\debug.log
+call %binary%\winpmem_1.6.2.exe .\logs\mem_dump.raw >NUL 2> .\logs\debug.log
 
 :main
 echo %date% %time% : Etape 01 - Outils SysInternals
@@ -172,11 +172,17 @@ sc.exe queryex >> .\logs\Systeme\Services.txt 2> .\logs\debug.log
 
 echo %date% %time% : Etape 04 - Collecte du Registre
 echo %date% %time% : Etape 04 - Collecte du Registre >> .\logs\C0-FF-EE.log
-reg.exe export HKLM .\logs\registre\registre_hklm.txt > NUL 2> .\logs\debug.log
-reg.exe export HKCU .\logs\registre\registre_hkcu.txt > NUL 2> .\logs\debug.log
-reg.exe export HKCR .\logs\registre\registre_hkcr.txt > NUL 2> .\logs\debug.log
-reg.exe export HKU .\logs\registre\registre_hku.txt > NUL 2> .\logs\debug.log
-reg.exe export HKCC .\logs\registre\registre_hkcc.txt > NUL 2> .\logs\debug.log
+REM reg.exe export HKLM .\logs\registre\registre_hklm.txt > NUL 2> .\logs\debug.log
+REM reg.exe export HKCU .\logs\registre\registre_hkcu.txt > NUL 2> .\logs\debug.log
+REM reg.exe export HKCR .\logs\registre\registre_hkcr.txt > NUL 2> .\logs\debug.log
+REM reg.exe export HKU .\logs\registre\registre_hku.txt > NUL 2> .\logs\debug.log
+REM reg.exe export HKCC .\logs\registre\registre_hkcc.txt > NUL 2> .\logs\debug.log
+call %binary%\bananabender.exe -h hkcu > .\logs\registre\hkcu.csv 2> .\logs\debug.log
+call %binary%\bananabender.exe -h hklm > .\logs\registre\hklm.csv 2> .\logs\debug.log
+call %binary%\bananabender.exe -h hkcr > .\logs\registre\hkcr.csv 2> .\logs\debug.log
+call %binary%\bananabender.exe -h hkcc > .\logs\registre\hkcc.csv 2> .\logs\debug.log
+call %binary%\bananabender.exe -h hku > .\logs\registre\hku.csv 2> .\logs\debug.log
+
 
 echo %date% %time% : Etape 05 - Collecte d'informations disques
 echo %date% %time% : Etape 05 - Collecte d'informations disques >> .\logs\C0-FF-EE.log
@@ -226,7 +232,7 @@ echo %date% %time% : Etape Finale - Compression >> .\logs\C0-FF-EE.log
 echo. >> .\logs\C0-FF-EE.log
 echo La collecte d'informations est terminee ! >> .\logs\C0-FF-EE.log
 echo. >> .\logs\C0-FF-EE.log
-call .\bin\7z.exe a -sdel .\%COMPUTERNAME%.zip .\logs > NUL 2> NUL
+call %binary%\7z.exe a -sdel .\%COMPUTERNAME%.zip .\logs > NUL 2> NUL
 
 echo.
 echo La collecte d'informations est terminee le %date% a %time:~0,2%:%time:~3,2%:%time:~6,2% !
