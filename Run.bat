@@ -31,6 +31,7 @@ cd %currentpath%
 set binary=".\bin"
 set VarQuestion="n"
 set VarQuestion2="n"
+set LogName=C0-FF-EE_%COMPUTERNAME%-%DATE:~6,4%%DATE:~3,2%%DATE:~0,2%-%time:~0,2%%time:~3,2%
 
 if exist ".\logs" rd .\logs /S /Q
 
@@ -94,7 +95,7 @@ if not exist ".\logs\disques" mkdir .\logs\Disques
 if /I %VarQuestion% NEQ o goto :main
 echo %date% %time% : Creation d'un Dump de RAM
 echo %date% %time% : Creation d'un Dump de RAM >> .\logs\C0-FF-EE.log
-call .\bin\winpmem_1.6.2.exe .\logs\mem_dump.raw >NUL 2> .\logs\debug.log
+call %binary%\winpmem_1.6.2.exe .\logs\mem_dump.raw >NUL 2> .\logs\debug.log
 
 :main
 echo %date% %time% : Etape 01 - Outils SysInternals
@@ -119,8 +120,10 @@ wmic csproduct >> .\logs\Bios\Computer.txt 2> .\logs\debug.log
 echo %date% %time% : Etape 03 - Collecte d'informations Systeme
 echo %date% %time% : Etape 03 - Collecte d'informations Systeme >> .\logs\C0-FF-EE.log
 tzutil /g >> .\logs\Systeme\Fuseau_horaire.txt 2> .\logs\debug.log
+whoami /all >> .\logs\Systeme\whoami.txt 2> .\logs\debug.log
 echo %date% %time% >> .\logs\Systeme\Date_et_heure.txt 2> .\logs\debug.log
 ver >> .\logs\Systeme\Version_Windows.txt 2> .\logs\debug.log
+set >> .\logs\Systeme\Variables_denvironnement.txt 2> .\logs\debug.log
 hostname >> .\logs\Systeme\Hostname.txt 2> .\logs\debug.log
 wmic computersystem list >> .\logs\Systeme\Info_systeme.txt 2> .\logs\debug.log
 msinfo32.exe /report .\logs\Systeme\msinfo32.txt 2> .\logs\debug.log
@@ -169,6 +172,8 @@ wevtutil epl System .\logs\systeme\logs\System.evtx 2> .\logs\debug.log
 schtasks /Query /V /FO list >> .\logs\Systeme\Taches_planifiees.txt 2> .\logs\debug.log
 schtasks /Query /V /FO CSV >> .\logs\Systeme\Taches_planifiees.csv 2> .\logs\debug.log
 sc.exe queryex >> .\logs\Systeme\Services.txt 2> .\logs\debug.log
+echo %COMSPEC% >>  .\logs\Systeme\Invite_de_commande.txt 2> .\logs\debug.log
+WMIC /Node:localhost /Namespace:\\root\SecurityCenter2 Path AntiVirusProduct Get displayName /Format:List >> .\logs\Systeme\Antivirus.txt 2> .\logs\debug.log
 
 echo %date% %time% : Etape 04 - Collecte du Registre
 echo %date% %time% : Etape 04 - Collecte du Registre >> .\logs\C0-FF-EE.log
@@ -177,6 +182,12 @@ reg.exe export HKCU .\logs\registre\registre_hkcu.txt > NUL 2> .\logs\debug.log
 reg.exe export HKCR .\logs\registre\registre_hkcr.txt > NUL 2> .\logs\debug.log
 reg.exe export HKU .\logs\registre\registre_hku.txt > NUL 2> .\logs\debug.log
 reg.exe export HKCC .\logs\registre\registre_hkcc.txt > NUL 2> .\logs\debug.log
+REM call %binary%\bananabender.exe -h hkcu > .\logs\registre\hkcu.csv 2> .\logs\debug.log
+REM call %binary%\bananabender.exe -h hklm > .\logs\registre\hklm.csv 2> .\logs\debug.log
+REM call %binary%\bananabender.exe -h hkcr > .\logs\registre\hkcr.csv 2> .\logs\debug.log
+REM call %binary%\bananabender.exe -h hkcc > .\logs\registre\hkcc.csv 2> .\logs\debug.log
+REM call %binary%\bananabender.exe -h hku > .\logs\registre\hku.csv 2> .\logs\debug.log
+
 
 echo %date% %time% : Etape 05 - Collecte d'informations disques
 echo %date% %time% : Etape 05 - Collecte d'informations disques >> .\logs\C0-FF-EE.log
@@ -212,6 +223,7 @@ netstat -nabo >> .\logs\reseau\Connexions_reseau_2.txt 2> .\logs\debug.log
 openfiles /query /v >> .\logs\reseau\Fichiers_ouverts_2.txt 2> .\logs\debug.log
 route print >> .\logs\reseau\Routes.txt 2> .\logs\debug.log
 netsh winhttp show proxy >> .\logs\reseau\Proxy.txt 2> .\logs\debug.log
+wmic ntdomain list >> .\logs\reseau\DomainGUID.txt 2> .\logs\debug.log
 
 if /I %VarQuestion2% NEQ o goto :fin
 if not exist ".\logs\Yara" mkdir .\logs\Yara
@@ -226,7 +238,7 @@ echo %date% %time% : Etape Finale - Compression >> .\logs\C0-FF-EE.log
 echo. >> .\logs\C0-FF-EE.log
 echo La collecte d'informations est terminee ! >> .\logs\C0-FF-EE.log
 echo. >> .\logs\C0-FF-EE.log
-call .\bin\7z.exe a -sdel .\%COMPUTERNAME%.zip .\logs > NUL 2> NUL
+call %binary%\7z.exe a -sdel .\%LogName%.zip .\logs > NUL 2> NUL
 
 echo.
 echo La collecte d'informations est terminee le %date% a %time:~0,2%:%time:~3,2%:%time:~6,2% !
