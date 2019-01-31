@@ -126,7 +126,7 @@ ver >> .\logs\Systeme\Version_Windows.txt 2> .\logs\debug.log
 set >> .\logs\Systeme\Variables_denvironnement.txt 2> .\logs\debug.log
 hostname >> .\logs\Systeme\Hostname.txt 2> .\logs\debug.log
 wmic computersystem list >> .\logs\Systeme\Info_systeme.txt 2> .\logs\debug.log
-msinfo32.exe /report .\logs\Systeme\msinfo32.txt 2> .\logs\debug.log
+msinfo32.exe /nfo .\logs\Systeme\msinfo32.nfo 2> .\logs\debug.log
 systeminfo >> .\logs\Systeme\Info_systeme_2.txt 2> .\logs\debug.log
 wmic startup list full >> .\logs\Systeme\autorun\Autorun_1.txt 2> .\logs\debug.log
 reg query HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run >> .\logs\Systeme\autorun\Autorun_reg.txt 2> .\logs\debug.log
