@@ -1,5 +1,42 @@
 @Echo off
 
+set currentpath=%~dp0 
+cd %currentpath%
+set binary=".\bin"
+set VarQuestion=null
+set VarQuestion2=null
+set LogName=C0-FF-EE_%COMPUTERNAME%-%DATE:~6,4%%DATE:~3,2%%DATE:~0,2%-%time:~0,2%%time:~3,2%
+
+if "%2"=="" goto :check
+
+goto :aide
+
+
+:check
+if "%1"=="" goto :admin
+if "%1"=="--dump" set VarQuestion=o & set VarQuestion2=n & goto :display
+if "%1"=="--yara" set VarQuestion=n & set VarQuestion2=o & goto :display
+if "%1"=="--all" set VarQuestion=o & set VarQuestion2=o & goto :display
+
+:aide
+echo Aide : 
+echo.
+echo %0 [argument]
+echo.
+echo Merci de renseigner un seul argument
+echo.
+echo Liste des arguments :
+echo   --dump : Lance C0-FF-EE avec Dump de RAM
+echo   --yara : Lance C0-FF-EE avec Yara
+echo   --all  : Lance C0-FF-EE avec Dump de RAM et Yara
+echo.
+echo Sans argument C0-FF-EE s'execute en mode interactif
+echo.
+
+goto :quit
+
+:admin
+
 :: On execute les commandes en administateur 
 
 :-------------------------------------
@@ -26,12 +63,7 @@ if '%errorlevel%' NEQ '0' (
     CD /D "%~dp0"
 :--------------------------------------
 
-set currentpath=%~dp0 
-cd %currentpath%
-set binary=".\bin"
-set VarQuestion="n"
-set VarQuestion2="n"
-set LogName=C0-FF-EE_%COMPUTERNAME%-%DATE:~6,4%%DATE:~3,2%%DATE:~0,2%-%time:~0,2%%time:~3,2%
+:display
 
 if exist ".\logs" rd .\logs /S /Q
 
@@ -73,13 +105,36 @@ echo TimeZone : >> .\logs\C0-FF-EE.log
 tzutil /g >> .\logs\C0-FF-EE.log
 echo. >> .\logs\C0-FF-EE.log
 
+if %VarQuestion% NEQ null goto :start
 
-:question
+
+:question1
 set /p VarQuestion= Lancer le Dump de RAM ? [o]ui/[N]on :
 echo.
+
+if %VarQuestion% == o goto :question2
+if %VarQuestion% == n goto :question2
+
+:ResultFalse
+echo Merci de repondre par [o]ui ou [n]on
+echo.
+set VarQuestion="n"
+goto :question1
+
+:question2
 set /p VarQuestion2= Executer Yara ? [o]ui/[N]on :
 echo.
 
+if %VarQuestion2% == o goto :start
+if %VarQuestion2% == n goto :start
+
+:ResultFalse2
+echo Merci de repondre par [o]ui ou [n]on
+echo.
+set VarQuestion2="n"
+goto :question2
+
+:start
 echo %date% %time% : Preparation
 echo %date% %time% : Preparation >> .\logs\C0-FF-EE.log
 
@@ -95,7 +150,7 @@ if not exist ".\logs\disques" mkdir .\logs\Disques
 if /I %VarQuestion% NEQ o goto :main
 echo %date% %time% : Creation d'un Dump de RAM
 echo %date% %time% : Creation d'un Dump de RAM >> .\logs\C0-FF-EE.log
-call %binary%\winpmem_1.6.2.exe .\logs\mem_dump.raw >NUL 2> .\logs\debug.log
+call %binary%\winpmem_v3.3.rc1.exe -o .\logs\mem_dump.raw >NUL 2> .\logs\debug.log
 
 :main
 echo %date% %time% : Etape 01 - Outils SysInternals
@@ -166,9 +221,12 @@ net localgroup "Utilisateurs du modèle COM distribué" >> .\logs\Systeme\Groupe
 quser >> .\logs\Systeme\Sessions_2.txt 2> .\logs\debug.log
 tasklist.exe /svc >> .\logs\Systeme\Processus_1.txt 2> .\logs\debug.log
 wmic process list full >> .\logs\Systeme\Processus_2.txt 2> .\logs\debug.log
-wevtutil epl Security .\logs\systeme\logs\security.evtx 2> .\logs\debug.log
+wevtutil epl Security .\logs\systeme\logs\Security.evtx 2> .\logs\debug.log
 wevtutil epl Application .\logs\systeme\logs\Application.evtx 2> .\logs\debug.log
 wevtutil epl System .\logs\systeme\logs\System.evtx 2> .\logs\debug.log
+wevtutil epl "Windows PowerShell" .\logs\systeme\logs\PowerShell.evtx 2> .\logs\debug.log
+wevtutil epl "Microsoft-Windows-TerminalServices-LocalSessionManager/Operational" .\logs\systeme\logs\TerminalServices-LocalSessionManager.evtx 2> .\logs\debug.log
+wevtutil epl "Microsoft-Windows-TerminalServices-RemoteConnectionManager/Operational" .\logs\systeme\logs\TerminalServices-RemoteConnectionManager.evtx 2> .\logs\debug.log
 schtasks /Query /V /FO list >> .\logs\Systeme\Taches_planifiees.txt 2> .\logs\debug.log
 schtasks /Query /V /FO CSV >> .\logs\Systeme\Taches_planifiees.csv 2> .\logs\debug.log
 sc.exe queryex >> .\logs\Systeme\Services.txt 2> .\logs\debug.log
@@ -227,6 +285,7 @@ wmic ntdomain list >> .\logs\reseau\DomainGUID.txt 2> .\logs\debug.log
 
 if /I %VarQuestion2% NEQ o goto :fin
 if not exist ".\logs\Yara" mkdir .\logs\Yara
+call bin\vcredist_x86.exe /q /norestart
 echo %date% %time% : Etape 07 - Recherche Yara
 echo %date% %time% : Etape 07 - Recherche Yara >> .\logs\C0-FF-EE.log
 call %binary%\yara32.exe -r -f %binary%\rules.yar c:\ >> .\logs\Yara\Result.txt 2>NUL
@@ -245,3 +304,5 @@ echo La collecte d'informations est terminee le %date% a %time:~0,2%:%time:~3,2%
 echo.
 
 pause
+
+:quit
