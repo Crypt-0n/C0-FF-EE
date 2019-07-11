@@ -14,6 +14,7 @@ goto :aide
 
 :check
 if "%1"=="" goto :admin
+if "%1"=="--noextra" set VarQuestion=n & set VarQuestion2=n & goto :display
 if "%1"=="--dump" set VarQuestion=o & set VarQuestion2=n & goto :display
 if "%1"=="--yara" set VarQuestion=n & set VarQuestion2=o & goto :display
 if "%1"=="--all" set VarQuestion=o & set VarQuestion2=o & goto :display
@@ -26,9 +27,10 @@ echo.
 echo Merci de renseigner un seul argument
 echo.
 echo Liste des arguments :
-echo   --dump : Lance C0-FF-EE avec Dump de RAM
-echo   --yara : Lance C0-FF-EE avec Yara
-echo   --all  : Lance C0-FF-EE avec Dump de RAM et Yara
+echo   --noextra : Lance C0-FF-EE sans Dump de RAM ni Yara
+echo   --dump    : Lance C0-FF-EE avec Dump de RAM
+echo   --yara    : Lance C0-FF-EE avec Yara
+echo   --all     : Lance C0-FF-EE avec Dump de RAM et Yara
 echo.
 echo Sans argument C0-FF-EE s'execute en mode interactif
 echo.
@@ -109,7 +111,7 @@ if %VarQuestion% NEQ null goto :start
 
 
 :question1
-set /p VarQuestion= Lancer le Dump de RAM ? [o]ui/[N]on :
+set /p VarQuestion= Lancer le Dump de RAM ? [o]ui/[n]on :
 echo.
 
 if %VarQuestion% == o goto :question2
@@ -122,7 +124,7 @@ set VarQuestion="n"
 goto :question1
 
 :question2
-set /p VarQuestion2= Executer Yara ? [o]ui/[N]on :
+set /p VarQuestion2= Executer Yara ? [o]ui/[n]on :
 echo.
 
 if %VarQuestion2% == o goto :start
@@ -249,6 +251,9 @@ REM call %binary%\bananabender.exe -h hku > .\logs\registre\hku.csv 2> .\logs\de
 
 echo %date% %time% : Etape 05 - Collecte d'informations disques
 echo %date% %time% : Etape 05 - Collecte d'informations disques >> .\logs\C0-FF-EE.log
+call %binary%\AmcacheParser.exe -i -f C:\Windows\AppCompat\Programs\Amcache.hve --csv .\logs\Disques\Amcache >> .\logs\C0-FF-EE.log
+call %binary%\AmcacheParser.exe -i -f C:\Windows\AppCompat\Programs\RecentFileCache.bcf --csv .\logs\Disques\Amcache >> .\logs\C0-FF-EE.log
+call %binary%\dd if=\\?\Device\Harddisk0\Partition0 of=.\logs\Disques\gpt-mbr.dd bs=17408 count=1 2> .\logs\C0-FF-EE.log
 fsutil usn readjournal c: >> .\logs\disques\usn.log 2> .\logs\debug.log
 REM call %binary%\Mft2Csv.exe /Volume:c: /OutputPath:.\logs\disques\MFT > NUL 2> .\logs\debug.log
 fsutil fsinfo drives >> .\logs\disques\Info_disques_1.txt 2> .\logs\debug.log
@@ -297,7 +302,8 @@ echo %date% %time% : Etape Finale - Compression >> .\logs\C0-FF-EE.log
 echo. >> .\logs\C0-FF-EE.log
 echo La collecte d'informations est terminee ! >> .\logs\C0-FF-EE.log
 echo. >> .\logs\C0-FF-EE.log
-call %binary%\7z.exe a -sdel .\%LogName%.zip .\logs > NUL 2> NUL
+call %binary%\7za.exe a .\%LogName%.zip .\logs > NUL 2> NUL
+if exist ".\logs" rd .\logs /S /Q
 
 echo.
 echo La collecte d'informations est terminee le %date% a %time:~0,2%:%time:~3,2%:%time:~6,2% !

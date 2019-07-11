@@ -27,9 +27,10 @@ Run.bat [argument]
 Merci de renseigner un seul argument
 
 Liste des arguments :
-  --dump : Lance C0-FF-EE avec Dump de RAM
-  --yara : Lance C0-FF-EE avec Yara
-  --all  : Lance C0-FF-EE avec Dump de RAM et Yara
+  --noextra : Lance C0-FF-EE sans Dump de RAM ni Yara
+  --dump    : Lance C0-FF-EE avec Dump de RAM
+  --yara    : Lance C0-FF-EE avec Yara
+  --all     : Lance C0-FF-EE avec Dump de RAM et Yara
 
 Sans argument C0-FF-EE s'execute en mode interactif
 ```
