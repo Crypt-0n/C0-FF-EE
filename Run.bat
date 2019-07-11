@@ -192,6 +192,7 @@ type c:\Windows\winstart.bat >> .\logs\Systeme\autorun\Autoexec.bat.txt 2> .\log
 type %windir%\wininit.ini >> .\logs\Systeme\autorun\wininit.ini.txt 2> .\logs\debug.log
 type %windir%\win.ini >> .\logs\Systeme\autorun\win.ini.txt 2> .\logs\debug.log
 xcopy C:\Windows\Prefetch\*.* .\logs\Systeme\Prefetch >NUL 2> .\logs\debug.log
+call %binary%\PECmd.exe -d "C:\Windows\Prefetch" --csv .\logs\Systeme\Prefetch-parsed >NUL 2> .\logs\debug.log
 wmic qfe >> .\logs\Systeme\KB.txt 2> .\logs\debug.log
 net accounts >> .\logs\Systeme\Politique_mot_de_passe.txt 2> .\logs\debug.log
 net start >> .\logs\Systeme\Service_lances_1.txt 2> .\logs\debug.log
