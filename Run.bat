@@ -252,9 +252,9 @@ REM call %binary%\bananabender.exe -h hku > .\logs\registre\hku.csv 2> .\logs\de
 
 echo %date% %time% : Etape 05 - Collecte d'informations disques
 echo %date% %time% : Etape 05 - Collecte d'informations disques >> .\logs\C0-FF-EE.log
-call %binary%\AmcacheParser.exe -i -f C:\Windows\AppCompat\Programs\Amcache.hve --csv .\logs\Disques\Amcache >> .\logs\C0-FF-EE.log
-call %binary%\AmcacheParser.exe -i -f C:\Windows\AppCompat\Programs\RecentFileCache.bcf --csv .\logs\Disques\Amcache >> .\logs\C0-FF-EE.log
-call %binary%\dd if=\\?\Device\Harddisk0\Partition0 of=.\logs\Disques\gpt-mbr.dd bs=17408 count=1 2> .\logs\C0-FF-EE.log
+call %binary%\AmcacheParser.exe -i -f C:\Windows\AppCompat\Programs\Amcache.hve --csv .\logs\Disques\Amcache >> .\logs\debug.log
+call %binary%\AmcacheParser.exe -i -f C:\Windows\AppCompat\Programs\RecentFileCache.bcf --csv .\logs\Disques\Amcache >> .\logs\debug.log
+call %binary%\dd if=\\?\Device\Harddisk0\Partition0 of=.\logs\Disques\gpt-mbr.dd bs=17408 count=1 2>NUL
 fsutil usn readjournal c: >> .\logs\disques\usn.log 2> .\logs\debug.log
 REM call %binary%\Mft2Csv.exe /Volume:c: /OutputPath:.\logs\disques\MFT > NUL 2> .\logs\debug.log
 fsutil fsinfo drives >> .\logs\disques\Info_disques_1.txt 2> .\logs\debug.log
@@ -294,7 +294,7 @@ if not exist ".\logs\Yara" mkdir .\logs\Yara
 call bin\vcredist_x86.exe /q /norestart
 echo %date% %time% : Etape 07 - Recherche Yara
 echo %date% %time% : Etape 07 - Recherche Yara >> .\logs\C0-FF-EE.log
-call %binary%\yara32.exe -r -f %binary%\rules.yar c:\ >> .\logs\Yara\Result.txt 2>NUL
+call %binary%\Yara4C0-FF-EE.exe -t c:\ -r >> .\logs\Yara\Result.txt 2>NUL
 
 :fin
 
