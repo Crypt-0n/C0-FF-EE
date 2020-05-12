@@ -144,7 +144,6 @@ if not exist ".\logs\Bios" mkdir .\logs\Bios
 if not exist ".\logs\Registre" mkdir .\logs\Registre
 if not exist ".\logs\reseau" mkdir .\logs\Reseau
 if not exist ".\logs\Systeme" mkdir .\logs\Systeme
-if not exist ".\logs\Systeme\Prefetch" mkdir .\logs\Systeme\Prefetch
 if not exist ".\logs\Systeme\autorun" mkdir .\logs\Systeme\Autorun
 if not exist ".\logs\Systeme\logs" mkdir .\logs\Systeme\Logs
 if not exist ".\logs\disques" mkdir .\logs\Disques
@@ -157,8 +156,7 @@ call %binary%\winpmem_v3.3.rc1.exe -o .\logs\mem_dump.raw >NUL 2> .\logs\debug.l
 :main
 echo %date% %time% : Etape 01 - Outils SysInternals
 echo %date% %time% : Etape 01 - Outils SysInternals >> .\logs\C0-FF-EE.log
-call %binary%\autorunsc.exe -a * -accepteula >> .\logs\Systeme\Autorun\SysInternals_autorunsc-a-f.txt 2> .\logs\debug.log
-call %binary%\autorunsc.exe -m -s -vt -accepteula >> .\logs\Systeme\Autorun\SysInternals_autorunsc-l-m-v.txt 2> .\logs\debug.log
+call %binary%\autorunsc.exe -a * -c -h -m -s -t -vt -accepteula >> .\logs\Systeme\Autorun\SysInternals_autorunsc.csv 2> .\logs\debug.log
 call %binary%\psfile.exe -accepteula >> .\logs\reseau\SysInternals_psfile.txt 2> .\logs\debug.log
 call %binary%\pipelist.exe -accepteula >> .\logs\systeme\SysInternals_pipelist.txt 2> .\logs\debug.log
 call %binary%\pslist.exe -accepteula >> .\logs\systeme\SysInternals_pslist.txt 2> .\logs\debug.log
@@ -184,14 +182,14 @@ set >> .\logs\Systeme\Variables_denvironnement.txt 2> .\logs\debug.log
 hostname >> .\logs\Systeme\Hostname.txt 2> .\logs\debug.log
 wmic computersystem list >> .\logs\Systeme\Info_systeme.txt 2> .\logs\debug.log
 msinfo32.exe /nfo .\logs\Systeme\msinfo32.nfo 2> .\logs\debug.log
-systeminfo >> .\logs\Systeme\Info_systeme_2.txt 2> .\logs\debug.log
+systeminfo /FO csv >> .\logs\Systeme\Info_systeme.csv 2> .\logs\debug.log
 wmic startup list full >> .\logs\Systeme\autorun\Autorun_1.txt 2> .\logs\debug.log
 reg query HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run >> .\logs\Systeme\autorun\Autorun_reg.txt 2> .\logs\debug.log
 type c:\Autoexec.bat >> .\logs\Systeme\autorun\Autoexec.bat.txt 2> .\logs\debug.log
 type c:\Windows\winstart.bat >> .\logs\Systeme\autorun\Autoexec.bat.txt 2> .\logs\debug.log
 type %windir%\wininit.ini >> .\logs\Systeme\autorun\wininit.ini.txt 2> .\logs\debug.log
 type %windir%\win.ini >> .\logs\Systeme\autorun\win.ini.txt 2> .\logs\debug.log
-xcopy C:\Windows\Prefetch\*.* .\logs\Systeme\Prefetch >NUL 2> .\logs\debug.log
+call %binary%\DFIR-Orc_x86.exe GetThis /config=%binary%\conf\GetArtefacts_config.xml /out=.\logs\systeme\Artefacts.zip >NUL 2> .\logs\debug.log
 call %binary%\PECmd.exe -d "C:\Windows\Prefetch" --csv .\logs\Systeme\Prefetch-parsed >NUL 2> .\logs\debug.log
 wmic qfe >> .\logs\Systeme\KB.txt 2> .\logs\debug.log
 net accounts >> .\logs\Systeme\Politique_mot_de_passe.txt 2> .\logs\debug.log
@@ -224,12 +222,8 @@ net localgroup "Utilisateurs du modèle COM distribué" >> .\logs\Systeme\Groupe
 quser >> .\logs\Systeme\Sessions_2.txt 2> .\logs\debug.log
 tasklist.exe /svc >> .\logs\Systeme\Processus_1.txt 2> .\logs\debug.log
 wmic process list full >> .\logs\Systeme\Processus_2.txt 2> .\logs\debug.log
-wevtutil epl Security .\logs\systeme\logs\Security.evtx 2> .\logs\debug.log
-wevtutil epl Application .\logs\systeme\logs\Application.evtx 2> .\logs\debug.log
-wevtutil epl System .\logs\systeme\logs\System.evtx 2> .\logs\debug.log
-wevtutil epl "Windows PowerShell" .\logs\systeme\logs\PowerShell.evtx 2> .\logs\debug.log
-wevtutil epl "Microsoft-Windows-TerminalServices-LocalSessionManager/Operational" .\logs\systeme\logs\TerminalServices-LocalSessionManager.evtx 2> .\logs\debug.log
-wevtutil epl "Microsoft-Windows-TerminalServices-RemoteConnectionManager/Operational" .\logs\systeme\logs\TerminalServices-RemoteConnectionManager.evtx 2> .\logs\debug.log
+call %binary%\DFIR-Orc_x86.exe GetThis /config=%binary%\conf\GetEvents_config.xml /out=.\logs\systeme\logs\Windows_Events.zip >NUL 2> .\logs\debug.log
+call %binary%\DFIR-Orc_x86.exe GetThis /config=%binary%\conf\GetSamHive_config.xml /out=.\logs\systeme\SAM.zip >NUL 2> .\logs\debug.log
 schtasks /Query /V /FO list >> .\logs\Systeme\Taches_planifiees.txt 2> .\logs\debug.log
 schtasks /Query /V /FO CSV >> .\logs\Systeme\Taches_planifiees.csv 2> .\logs\debug.log
 sc.exe queryex >> .\logs\Systeme\Services.txt 2> .\logs\debug.log
